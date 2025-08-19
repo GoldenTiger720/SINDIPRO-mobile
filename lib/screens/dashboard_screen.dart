@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/language_provider.dart';
 import 'buildings_screen.dart';
 import 'legal_obligations_screen.dart';
 import 'equipment_screen.dart';
@@ -16,8 +17,8 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
+    return Consumer2<AuthProvider, LanguageProvider>(
+      builder: (context, authProvider, languageProvider, child) {
         final user = authProvider.user;
         if (user == null) return const SizedBox();
 
@@ -48,7 +49,7 @@ class DashboardScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     // Header with logo and user menu
-                    _buildHeader(context, authProvider),
+                    _buildHeader(context, authProvider, languageProvider),
                     
                     // Dashboard content
                     Expanded(
@@ -142,7 +143,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AuthProvider authProvider) {
+  Widget _buildHeader(BuildContext context, AuthProvider authProvider, LanguageProvider languageProvider) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
@@ -171,12 +172,47 @@ class DashboardScreen extends StatelessWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: TextButton.icon(
-                  icon: const Icon(Icons.language, color: Colors.white, size: 18),
-                  label: const Text('PT', style: TextStyle(color: Colors.white)),
-                  onPressed: () {
-                    // TODO: Implement language switching
+                child: PopupMenuButton<String>(
+                  onSelected: (value) {
+                    languageProvider.changeLanguage(value);
                   },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.language, color: Colors.white, size: 18),
+                        const SizedBox(width: 4),
+                        Text(
+                          languageProvider.currentLocale.languageCode.toUpperCase(),
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        const Icon(Icons.arrow_drop_down, color: Colors.white, size: 18),
+                      ],
+                    ),
+                  ),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'pt',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.flag),
+                          const SizedBox(width: 8),
+                          Text(languageProvider.portuguese),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'en',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.flag),
+                          const SizedBox(width: 8),
+                          Text(languageProvider.english),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               
@@ -204,33 +240,33 @@ class DashboardScreen extends StatelessWidget {
                   },
                   icon: const Icon(Icons.person, color: Colors.white),
                   itemBuilder: (context) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'profile',
                       child: Row(
                         children: [
-                          Icon(Icons.person_outline),
-                          SizedBox(width: 8),
-                          Text('Meu Perfil'),
+                          const Icon(Icons.person_outline),
+                          const SizedBox(width: 8),
+                          Text(languageProvider.myProfile),
                         ],
                       ),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'settings',
                       child: Row(
                         children: [
-                          Icon(Icons.settings_outlined),
-                          SizedBox(width: 8),
-                          Text('Configurações'),
+                          const Icon(Icons.settings_outlined),
+                          const SizedBox(width: 8),
+                          Text(languageProvider.settings),
                         ],
                       ),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'logout',
                       child: Row(
                         children: [
-                          Icon(Icons.logout),
-                          SizedBox(width: 8),
-                          Text('Sair'),
+                          const Icon(Icons.logout),
+                          const SizedBox(width: 8),
+                          Text(languageProvider.logout),
                         ],
                       ),
                     ),
@@ -245,57 +281,59 @@ class DashboardScreen extends StatelessWidget {
   }
 
   List<Widget> _buildDashboardCards(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    
     final dashboardItems = [
       {
-        'title': 'Cadastro Básico de Condomínios',
+        'title': languageProvider.buildingManagement,
         'icon': Icons.apartment,
         'color': const Color(0xFF6B7280), // dashboard-gray
         'route': () => _navigateToScreen(context, const BuildingsScreen()),
       },
       {
-        'title': 'Obrigações Legais e Documentos',
+        'title': languageProvider.legalObligationsDocuments,
         'icon': Icons.warning,
         'color': const Color(0xFFDC2626), // dashboard-red
         'route': () => _navigateToScreen(context, const LegalObligationsScreen()),
       },
       {
-        'title': 'Manutenção de Equipamentos',
+        'title': languageProvider.equipmentMaintenance,
         'icon': Icons.build,
         'color': const Color(0xFF16A34A), // dashboard-green
         'route': () => _navigateToScreen(context, const EquipmentScreen()),
       },
       {
-        'title': 'Gestão Financeira e Orçamentária',
+        'title': languageProvider.financialManagement,
         'icon': Icons.bar_chart,
         'color': const Color(0xFFF97316), // dashboard-orange
         'route': () => _navigateToScreen(context, const FinancialScreen()),
       },
       {
-        'title': 'Gestão de Consumo',
+        'title': languageProvider.consumptionManagement,
         'icon': Icons.calculate,
         'color': const Color(0xFF2563EB), // dashboard-blue
         'route': () => _navigateToScreen(context, const ConsumptionScreen()),
       },
       {
-        'title': 'Gestão de Campo e Pesquisas',
+        'title': languageProvider.fieldManagementSurveys,
         'icon': Icons.chat_bubble_outline,
         'color': const Color(0xFF9333EA), // dashboard-purple
         'route': () => _navigateToScreen(context, const FieldManagementScreen()),
       },
       {
-        'title': 'Relatórios',
+        'title': languageProvider.reports,
         'icon': Icons.description,
         'color': const Color(0xFF0D9488), // dashboard-teal
         'route': () => _navigateToScreen(context, const ReportsScreen()),
       },
       {
-        'title': 'Gestão de Usuários',
+        'title': languageProvider.userManagement,
         'icon': Icons.people,
         'color': const Color(0xFFDB2777), // dashboard-pink
         'route': () => _navigateToScreen(context, const UsersScreen()),
       },
       {
-        'title': 'Contatos de Fornecedores',
+        'title': languageProvider.supplierContacts,
         'icon': Icons.calendar_today,
         'color': const Color(0xFF4F46E5), // dashboard-indigo
         'route': () => _navigateToScreen(context, const SupplierContactsScreen()),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
+import 'providers/language_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/splash_screen.dart';
@@ -18,10 +20,23 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
       ],
-      child: MaterialApp(
-        title: 'SINDIPRO Mobile',
-        debugShowCheckedModeBanner: false,
+      child: Consumer<LanguageProvider>(
+        builder: (context, languageProvider, child) {
+          return MaterialApp(
+            title: 'SINDIPRO Mobile',
+            debugShowCheckedModeBanner: false,
+            locale: languageProvider.currentLocale,
+            supportedLocales: const [
+              Locale('pt', 'BR'),
+              Locale('en', 'US'),
+            ],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: const Color(0xFF2563EB), // Blue color from web version
@@ -59,10 +74,12 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        routes: {
-          '/': (context) => const AuthWrapper(),
-          '/home': (context) => const DashboardScreen(),
-          '/signup': (context) => const SignUpScreen(),
+            routes: {
+              '/': (context) => const AuthWrapper(),
+              '/home': (context) => const DashboardScreen(),
+              '/signup': (context) => const SignUpScreen(),
+            },
+          );
         },
       ),
     );
