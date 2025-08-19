@@ -155,6 +155,7 @@ class _ContactsScreenState extends State<ContactsScreen>
             ],
           ),
           floatingActionButton: FloatingActionButton(
+            heroTag: "contacts_fab",
             onPressed: _showAddContactDialog,
             child: const Icon(Icons.add),
           ),

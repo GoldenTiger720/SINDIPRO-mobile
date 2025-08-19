@@ -105,6 +105,7 @@ class _FinancialScreenState extends State<FinancialScreen>
                   ],
                 ),
           floatingActionButton: FloatingActionButton(
+            heroTag: "financial_fab",
             onPressed: () => _showAddExpenseDialog(),
             child: const Icon(Icons.add),
           ),

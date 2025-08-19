@@ -150,6 +150,7 @@ class _EquipmentScreenState extends State<EquipmentScreen> {
             ],
           ),
           floatingActionButton: FloatingActionButton(
+            heroTag: "equipment_fab",
             onPressed: () => _showAddMaintenanceDialog(),
             child: const Icon(Icons.add),
           ),
