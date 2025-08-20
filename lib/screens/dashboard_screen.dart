@@ -23,29 +23,8 @@ class DashboardScreen extends StatelessWidget {
         if (user == null) return const SizedBox();
 
         return Scaffold(
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/mobile.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color(0xFF2563EB).withOpacity(0.8),
-                    const Color(0xFF1D4ED8).withOpacity(0.8),
-                  ],
-                ),
-              ),
-              child: SafeArea(
+          backgroundColor: Colors.grey[100],
+          body: SafeArea(
                 child: Column(
                   children: [
                     // Header with logo and user menu
@@ -70,7 +49,7 @@ class DashboardScreen extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 28,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                                          color: Color(0xFF2563EB),
                                           letterSpacing: 2.0,
                                         ),
                                       ),
@@ -96,7 +75,7 @@ class DashboardScreen extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.w500,
-                                          color: Colors.white70,
+                                          color: Color(0xFF6B7280),
                                           letterSpacing: 1.0,
                                         ),
                                       ),
@@ -135,8 +114,6 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            ),
           ),
         );
       },
@@ -146,17 +123,27 @@ class DashboardScreen extends StatelessWidget {
   Widget _buildHeader(BuildContext context, AuthProvider authProvider, LanguageProvider languageProvider) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Menu button (placeholder for now)
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.grey[100],
               borderRadius: BorderRadius.circular(8),
             ),
             child: IconButton(
-              icon: const Icon(Icons.menu, color: Colors.white),
+              icon: const Icon(Icons.menu, color: Color(0xFF2563EB)),
               onPressed: () {
                 // TODO: Implement hamburger menu
               },
@@ -169,7 +156,7 @@ class DashboardScreen extends StatelessWidget {
               // Language selector
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: PopupMenuButton<String>(
@@ -181,13 +168,13 @@ class DashboardScreen extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.language, color: Colors.white, size: 18),
+                        const Icon(Icons.language, color: Color(0xFF2563EB), size: 18),
                         const SizedBox(width: 4),
                         Text(
                           languageProvider.currentLocale.languageCode.toUpperCase(),
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          style: const TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.bold),
                         ),
-                        const Icon(Icons.arrow_drop_down, color: Colors.white, size: 18),
+                        const Icon(Icons.arrow_drop_down, color: Color(0xFF2563EB), size: 18),
                       ],
                     ),
                   ),
@@ -221,7 +208,7 @@ class DashboardScreen extends StatelessWidget {
               // User menu
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: PopupMenuButton<String>(
@@ -238,7 +225,7 @@ class DashboardScreen extends StatelessWidget {
                         break;
                     }
                   },
-                  icon: const Icon(Icons.person, color: Colors.white),
+                  icon: const Icon(Icons.person, color: Color(0xFF2563EB)),
                   itemBuilder: (context) => [
                     PopupMenuItem(
                       value: 'profile',
