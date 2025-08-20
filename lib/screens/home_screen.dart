@@ -103,6 +103,7 @@ class DashboardScreen extends StatelessWidget {
             title: Text('${languageProvider.dashboard} - ${user.role.toUpperCase()}'),
             actions: [
               PopupMenuButton<String>(
+                icon: const Icon(Icons.account_circle),
                 onSelected: (value) {
                   switch (value) {
                     case 'profile':
@@ -123,35 +124,32 @@ class DashboardScreen extends StatelessWidget {
                   }
                 },
                 itemBuilder: (context) => [
-                  PopupMenuItem(
+                  PopupMenuItem<String>(
                     value: 'profile',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.person, color: Color(0xFF6366F1)),
-                        const SizedBox(width: 8),
-                        Text(languageProvider.myProfile),
-                      ],
+                    child: ListTile(
+                      leading: const Icon(Icons.person, color: Color(0xFF6366F1)),
+                      title: Text(languageProvider.myProfile),
+                      dense: true,
                     ),
                   ),
-                  PopupMenuItem(
+                  PopupMenuItem<String>(
                     value: 'settings',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.settings, color: Color(0xFF6B7280)),
-                        const SizedBox(width: 8),
-                        Text(languageProvider.settings),
-                      ],
+                    child: ListTile(
+                      leading: const Icon(Icons.settings, color: Color(0xFF6B7280)),
+                      title: Text(languageProvider.settings),
+                      dense: true,
                     ),
                   ),
                   const PopupMenuDivider(),
-                  PopupMenuItem(
+                  PopupMenuItem<String>(
                     value: 'logout',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.logout, color: Color(0xFFEF4444)),
-                        const SizedBox(width: 8),
-                        Text(languageProvider.logout, style: const TextStyle(color: Color(0xFFEF4444))),
-                      ],
+                    child: ListTile(
+                      leading: const Icon(Icons.logout, color: Color(0xFFEF4444)),
+                      title: Text(
+                        languageProvider.logout,
+                        style: const TextStyle(color: Color(0xFFEF4444)),
+                      ),
+                      dense: true,
                     ),
                   ),
                 ],

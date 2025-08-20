@@ -8,6 +8,8 @@ import 'equipment_screen.dart';
 import 'financial_screen.dart';
 import 'consumption_screen.dart';
 import 'field_management_screen.dart';
+import 'profile_screen.dart';
+import 'settings_screen.dart';
 import 'reports_screen.dart';
 import 'users_screen.dart';
 import 'supplier_contacts_screen.dart';
@@ -215,46 +217,50 @@ class DashboardScreen extends StatelessWidget {
                   onSelected: (value) {
                     switch (value) {
                       case 'profile':
-                        // TODO: Navigate to profile
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                        );
                         break;
                       case 'settings':
-                        // TODO: Navigate to settings
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                        );
                         break;
                       case 'logout':
                         authProvider.logout();
                         break;
                     }
                   },
-                  icon: const Icon(Icons.person, color: Color(0xFF2563EB)),
+                  icon: const Icon(Icons.account_circle, color: Color(0xFF2563EB)),
                   itemBuilder: (context) => [
                     PopupMenuItem(
                       value: 'profile',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.person_outline),
-                          const SizedBox(width: 8),
-                          Text(languageProvider.myProfile),
-                        ],
+                      child: ListTile(
+                        leading: const Icon(Icons.person, color: Color(0xFF6366F1)),
+                        title: Text(languageProvider.myProfile),
+                        dense: true,
                       ),
                     ),
                     PopupMenuItem(
                       value: 'settings',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.settings_outlined),
-                          const SizedBox(width: 8),
-                          Text(languageProvider.settings),
-                        ],
+                      child: ListTile(
+                        leading: const Icon(Icons.settings, color: Color(0xFF6B7280)),
+                        title: Text(languageProvider.settings),
+                        dense: true,
                       ),
                     ),
+                    const PopupMenuDivider(),
                     PopupMenuItem(
                       value: 'logout',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.logout),
-                          const SizedBox(width: 8),
-                          Text(languageProvider.logout),
-                        ],
+                      child: ListTile(
+                        leading: const Icon(Icons.logout, color: Color(0xFFEF4444)),
+                        title: Text(
+                          languageProvider.logout,
+                          style: const TextStyle(color: Color(0xFFEF4444)),
+                        ),
+                        dense: true,
                       ),
                     ),
                   ],

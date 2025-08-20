@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/language_provider.dart';
+import '../providers/auth_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,27 +18,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  
-  // Mock user data
-  final Map<String, dynamic> userData = {
-    'username': 'João Silva Santos',
-    'email': 'joao.silva@sindipro.com.br',
-    'memberSince': DateTime(2020, 3, 15),
-    'buildingsManaged': 12,
-    'reportsGenerated': 45,
-    'tasksCompleted': 128,
-    'profileImage': null,
-  };
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
   }
 
-  void _loadUserData() {
-    _usernameController.text = userData['username'];
-    _emailController.text = userData['email'];
+  void _loadUserData(String? username, String email) {
+    _usernameController.text = username ?? email.split('@')[0];
+    _emailController.text = email;
   }
 
   @override
@@ -52,8 +41,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LanguageProvider>(
-      builder: (context, languageProvider, child) {
+    return Consumer2<LanguageProvider, AuthProvider>(
+      builder: (context, languageProvider, authProvider, child) {
+        final user = authProvider.user;
+        if (user == null) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        
+        // Load user data into controllers
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _loadUserData(user.username, user.email);
+        });
         return Scaffold(
           backgroundColor: const Color(0xFFF9FAFB), // bg-gray-50
           appBar: AppBar(
@@ -131,7 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     radius: 40,
                                     backgroundColor: const Color(0xFF2563EB),
                                     child: Text(
-                                      userData['username'][0].toUpperCase(),
+                                      (user.username ?? user.email)[0].toUpperCase(),
                                       style: const TextStyle(
                                         fontSize: 32,
                                         color: Colors.white,
@@ -175,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      userData['username'],
+                                      user.username ?? user.email.split('@')[0],
                                       style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w600,
@@ -184,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      userData['email'],
+                                      user.email,
                                       style: const TextStyle(
                                         color: Color(0xFF6B7280),
                                       ),
@@ -192,13 +192,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     const SizedBox(height: 4),
                                     Text(
                                       languageProvider.currentLocale.languageCode == 'en'
-                                          ? 'Member since ${userData['memberSince'].year}'
-                                          : 'Membro desde ${userData['memberSince'].year}',
+                                          ? 'Role: ${user.role.toUpperCase()}'
+                                          : 'Função: ${user.role.toUpperCase()}',
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF9CA3AF),
                                       ),
                                     ),
+                                    if (user.condominium != null) ...[
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        languageProvider.currentLocale.languageCode == 'en'
+                                            ? 'Building: ${user.condominium}'
+                                            : 'Edifício: ${user.condominium}',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF9CA3AF),
+                                        ),
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ),
@@ -230,50 +242,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Row(
                             children: [
                               if (!_isEditingProfile) ...[
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    setState(() {
-                                      _isEditingProfile = true;
-                                    });
-                                  },
-                                  icon: const Icon(Icons.edit),
-                                  label: Text(languageProvider.editProfile),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2563EB),
-                                    foregroundColor: Colors.white,
+                                Flexible(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        _isEditingProfile = true;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.edit),
+                                    label: Text(languageProvider.editProfile),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF2563EB),
+                                      foregroundColor: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ] else ...[
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    setState(() {
-                                      _isEditingProfile = false;
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(languageProvider.currentLocale.languageCode == 'en'
-                                            ? 'Profile updated successfully'
-                                            : 'Perfil atualizado com sucesso'),
-                                        backgroundColor: const Color(0xFF10B981),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(Icons.save),
-                                  label: Text(languageProvider.saveChanges),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF10B981),
-                                    foregroundColor: Colors.white,
+                                Flexible(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        _isEditingProfile = false;
+                                      });
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(languageProvider.currentLocale.languageCode == 'en'
+                                              ? 'Profile updated successfully'
+                                              : 'Perfil atualizado com sucesso'),
+                                          backgroundColor: const Color(0xFF10B981),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.save),
+                                    label: Text(languageProvider.saveChanges),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF10B981),
+                                      foregroundColor: Colors.white,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 12),
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _isEditingProfile = false;
-                                      _loadUserData(); // Reset form
-                                    });
-                                  },
-                                  child: Text(languageProvider.cancel),
+                                Flexible(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _isEditingProfile = false;
+                                        _loadUserData(user.username, user.email); // Reset form
+                                      });
+                                    },
+                                    child: Text(languageProvider.cancel),
+                                  ),
                                 ),
                               ],
                             ],
@@ -431,9 +449,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Expanded(
                                     child: _buildStatCard(
                                       title: languageProvider.currentLocale.languageCode == 'en'
-                                          ? 'Buildings Managed'
-                                          : 'Edifícios Gerenciados',
-                                      value: userData['buildingsManaged'].toString(),
+                                          ? (user.isManager ? 'Buildings Managed' : 'Buildings Assigned')
+                                          : (user.isManager ? 'Edifícios Gerenciados' : 'Edifícios Atribuídos'),
+                                      value: user.isManager ? '-' : (user.condominium != null ? '1' : '0'),
                                       color: const Color(0xFF2563EB),
                                       backgroundColor: const Color(0xFFEFF6FF),
                                     ),
@@ -446,9 +464,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Expanded(
                                     child: _buildStatCard(
                                       title: languageProvider.currentLocale.languageCode == 'en'
-                                          ? 'Reports Generated'
-                                          : 'Relatórios Gerados',
-                                      value: userData['reportsGenerated'].toString(),
+                                          ? 'User ID'
+                                          : 'ID do Usuário',
+                                      value: user.id.toString(),
                                       color: const Color(0xFF10B981),
                                       backgroundColor: const Color(0xFFECFDF5),
                                     ),
@@ -457,9 +475,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Expanded(
                                     child: _buildStatCard(
                                       title: languageProvider.currentLocale.languageCode == 'en'
-                                          ? 'Tasks Completed'
-                                          : 'Tarefas Concluídas',
-                                      value: userData['tasksCompleted'].toString(),
+                                          ? 'Access Level'
+                                          : 'Nível de Acesso',
+                                      value: user.isManager 
+                                          ? (languageProvider.currentLocale.languageCode == 'en' ? 'Full' : 'Total')
+                                          : (languageProvider.currentLocale.languageCode == 'en' ? 'Limited' : 'Limitado'),
                                       color: const Color(0xFF8B5CF6),
                                       backgroundColor: const Color(0xFFF3E8FF),
                                     ),
