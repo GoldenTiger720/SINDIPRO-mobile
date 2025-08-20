@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/language_provider.dart';
 
 class BuildingsScreen extends StatefulWidget {
   const BuildingsScreen({super.key});
@@ -24,15 +26,17 @@ class _BuildingsScreenState extends State<BuildingsScreen> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
             const Icon(Icons.apartment, color: Color(0xFF2563EB)),
             const SizedBox(width: 8),
             Expanded(
-              child: const Text(
-                'Cadastro Básico de Condomínios',
+              child: Text(
+                languageProvider.buildingManagement,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -46,36 +50,40 @@ class _BuildingsScreenState extends State<BuildingsScreen> with TickerProviderSt
           labelColor: const Color(0xFF2563EB),
           unselectedLabelColor: Colors.grey,
           indicatorColor: const Color(0xFF2563EB),
-          tabs: const [
+          tabs: [
             Tab(
-              icon: Icon(Icons.apartment),
-              text: 'Informações do Edifício',
+              icon: const Icon(Icons.apartment),
+              text: languageProvider.buildingInformation,
             ),
             Tab(
-              icon: Icon(Icons.home),
-              text: 'Gestão de Unidades',
+              icon: const Icon(Icons.home),
+              text: languageProvider.unitManagement,
             ),
             Tab(
-              icon: Icon(Icons.search),
-              text: 'Consulta',
+              icon: const Icon(Icons.search),
+              text: languageProvider.query,
             ),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          BuildingInformationTab(),
-          UnitManagementTab(),
-          UnitQueryTab(),
+        children: [
+          BuildingInformationTab(languageProvider: languageProvider),
+          UnitManagementTab(languageProvider: languageProvider),
+          UnitQueryTab(languageProvider: languageProvider),
         ],
       ),
+    );
+      },
     );
   }
 }
 
 class BuildingInformationTab extends StatelessWidget {
-  const BuildingInformationTab({super.key});
+  final LanguageProvider languageProvider;
+  
+  const BuildingInformationTab({super.key, required this.languageProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -169,20 +177,20 @@ class BuildingInformationTab extends StatelessWidget {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Número',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.number,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         flex: 3,
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Bairro',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.neighborhood,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       ),
@@ -193,19 +201,19 @@ class BuildingInformationTab extends StatelessWidget {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Cidade',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.city,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Estado',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.state,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       ),
@@ -222,25 +230,25 @@ class BuildingInformationTab extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Informações do Administrador',
-                    style: TextStyle(
+                  Text(
+                    languageProvider.administratorInfo,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const TextField(
+                  TextField(
                     decoration: InputDecoration(
-                      labelText: 'Nome do Administrador',
-                      border: OutlineInputBorder(),
+                      labelText: languageProvider.administratorName,
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const TextField(
+                  TextField(
                     decoration: InputDecoration(
-                      labelText: 'Telefone',
-                      border: OutlineInputBorder(),
+                      labelText: languageProvider.phone,
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                 ],
@@ -262,7 +270,7 @@ class BuildingInformationTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text('Salvar Informações'),
+              child: Text(languageProvider.saveInformation),
             ),
           ),
         ],
@@ -272,7 +280,9 @@ class BuildingInformationTab extends StatelessWidget {
 }
 
 class UnitManagementTab extends StatelessWidget {
-  const UnitManagementTab({super.key});
+  final LanguageProvider languageProvider;
+  
+  const UnitManagementTab({super.key, required this.languageProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -288,9 +298,9 @@ class UnitManagementTab extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Adicionar Nova Unidade',
-                    style: TextStyle(
+                  Text(
+                    languageProvider.addNewUnit,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -299,19 +309,19 @@ class UnitManagementTab extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Número da Unidade',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.unitNumber,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Bloco/Torre',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.blockTower,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       ),
@@ -321,20 +331,20 @@ class UnitManagementTab extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Andar',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.floor,
+                            border: const OutlineInputBorder(),
                           ),
                           keyboardType: TextInputType.number,
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Área (m²)',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.area,
+                            border: const OutlineInputBorder(),
                           ),
                           keyboardType: TextInputType.number,
                         ),
@@ -342,17 +352,17 @@ class UnitManagementTab extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  const TextField(
+                  TextField(
                     decoration: InputDecoration(
-                      labelText: 'Proprietário',
-                      border: OutlineInputBorder(),
+                      labelText: languageProvider.owner,
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Status',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: languageProvider.status,
+                      border: const OutlineInputBorder(),
                     ),
                     items: const [
                       DropdownMenuItem(value: 'occupied', child: Text('Ocupada')),
@@ -376,7 +386,7 @@ class UnitManagementTab extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text('Adicionar Unidade'),
+                      child: Text(languageProvider.addUnit),
                     ),
                   ),
                 ],
@@ -391,20 +401,20 @@ class UnitManagementTab extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Unidades Cadastradas',
-                    style: TextStyle(
+                  Text(
+                    languageProvider.registeredUnits,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 16),
                   // Search bar
-                  const TextField(
+                  TextField(
                     decoration: InputDecoration(
-                      labelText: 'Buscar unidade...',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.search),
+                      labelText: languageProvider.searchUnit,
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.search),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -469,7 +479,9 @@ class UnitManagementTab extends StatelessWidget {
 }
 
 class UnitQueryTab extends StatelessWidget {
-  const UnitQueryTab({super.key});
+  final LanguageProvider languageProvider;
+  
+  const UnitQueryTab({super.key, required this.languageProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -484,9 +496,9 @@ class UnitQueryTab extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Consultar Unidade',
-                    style: TextStyle(
+                  Text(
+                    languageProvider.consultUnit,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -495,19 +507,19 @@ class UnitQueryTab extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Número da Unidade',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.unitNumber,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
-                            labelText: 'Bloco/Torre',
-                            border: OutlineInputBorder(),
+                            labelText: languageProvider.blockTower,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       ),
@@ -522,7 +534,7 @@ class UnitQueryTab extends StatelessWidget {
                             // TODO: Implement search functionality
                           },
                           icon: const Icon(Icons.search),
-                          label: const Text('Buscar'),
+                          label: Text(languageProvider.search),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2563EB),
                             foregroundColor: Colors.white,
@@ -540,7 +552,7 @@ class UnitQueryTab extends StatelessWidget {
                             // TODO: Implement clear functionality
                           },
                           icon: const Icon(Icons.clear),
-                          label: const Text('Limpar'),
+                          label: Text(languageProvider.clear),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(
@@ -563,9 +575,9 @@ class UnitQueryTab extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Resultado da Consulta',
-                    style: TextStyle(
+                  Text(
+                    languageProvider.queryResult,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -579,25 +591,25 @@ class UnitQueryTab extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.grey.withOpacity(0.3)),
                     ),
-                    child: const Column(
+                    child: Column(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.search_off,
                           size: 48,
                           color: Colors.grey,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Text(
-                          'Nenhuma consulta realizada',
-                          style: TextStyle(
+                          languageProvider.noQueryPerformed,
+                          style: const TextStyle(
                             fontSize: 16,
                             color: Colors.grey,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(
-                          'Use os campos acima para buscar uma unidade',
-                          style: TextStyle(
+                          languageProvider.useFieldsAboveToSearch,
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
                           ),

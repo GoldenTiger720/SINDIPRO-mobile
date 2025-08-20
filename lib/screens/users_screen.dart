@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/language_provider.dart';
 
 class UsersScreen extends StatelessWidget {
   const UsersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
             const Icon(Icons.people, color: Color(0xFFDB2777)),
             const SizedBox(width: 8),
             Expanded(
-              child: const Text(
-                'Gestão de Usuários',
+              child: Text(
+                languageProvider.userManagement,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -33,7 +37,7 @@ class UsersScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _buildStatCard(
-                    title: 'Total de Usuários',
+                    title: languageProvider.totalUsers,
                     value: '24',
                     color: const Color(0xFF2563EB),
                     icon: Icons.people,
@@ -42,7 +46,7 @@ class UsersScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildStatCard(
-                    title: 'Administradores',
+                    title: languageProvider.administrators,
                     value: '3',
                     color: const Color(0xFFDB2777),
                     icon: Icons.admin_panel_settings,
@@ -55,7 +59,7 @@ class UsersScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _buildStatCard(
-                    title: 'Ativos',
+                    title: languageProvider.activeUsers,
                     value: '22',
                     color: const Color(0xFF16A34A),
                     icon: Icons.check_circle,
@@ -64,7 +68,7 @@ class UsersScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildStatCard(
-                    title: 'Inativos',
+                    title: languageProvider.inactiveUsers,
                     value: '2',
                     color: const Color(0xFF6B7280),
                     icon: Icons.block,
@@ -81,8 +85,8 @@ class UsersScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Ações Rápidas',
+                    Text(
+                      languageProvider.quickActions,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -94,10 +98,10 @@ class UsersScreen extends StatelessWidget {
                         Expanded(
                           child: ElevatedButton.icon(
                             onPressed: () {
-                              _showAddUserDialog(context);
+                              _showAddUserDialog(context, languageProvider);
                             },
                             icon: const Icon(Icons.person_add),
-                            label: const Text('Novo Usuário'),
+                            label: Text(languageProvider.newUser),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFDB2777),
                               foregroundColor: Colors.white,
@@ -142,8 +146,8 @@ class UsersScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Lista de Usuários',
+                        Text(
+                          languageProvider.userList,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -357,6 +361,8 @@ class UsersScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+      },
     );
   }
 
@@ -594,7 +600,7 @@ class UsersScreen extends StatelessWidget {
     );
   }
 
-  void _showAddUserDialog(BuildContext context) {
+  void _showAddUserDialog(BuildContext context, LanguageProvider languageProvider) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

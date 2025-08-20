@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/language_provider.dart';
 
 class SupplierContactsScreen extends StatefulWidget {
   const SupplierContactsScreen({super.key});
@@ -25,15 +27,17 @@ class _SupplierContactsScreenState extends State<SupplierContactsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
             const Icon(Icons.calendar_today, color: Color(0xFF4F46E5)),
             const SizedBox(width: 8),
             Expanded(
-              child: const Text(
-                'Contatos de Fornecedores',
+              child: Text(
+                languageProvider.supplierContacts,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -47,14 +51,14 @@ class _SupplierContactsScreenState extends State<SupplierContactsScreen>
           labelColor: const Color(0xFF4F46E5),
           unselectedLabelColor: Colors.grey,
           indicatorColor: const Color(0xFF4F46E5),
-          tabs: const [
+          tabs: [
             Tab(
-              icon: Icon(Icons.calendar_month),
-              text: 'Agenda de Compromissos',
+              icon: const Icon(Icons.calendar_month),
+              text: languageProvider.appointmentCalendar,
             ),
             Tab(
-              icon: Icon(Icons.phone),
-              text: 'Lista Telefônica',
+              icon: const Icon(Icons.phone),
+              text: languageProvider.phoneDirectory,
             ),
           ],
         ),
@@ -66,6 +70,8 @@ class _SupplierContactsScreenState extends State<SupplierContactsScreen>
           PhoneDirectoryTab(),
         ],
       ),
+    );
+      },
     );
   }
 }

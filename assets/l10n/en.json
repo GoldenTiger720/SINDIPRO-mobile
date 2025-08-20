@@ -255,5 +255,8 @@
   "pleaseWait": "Please wait...",
   "noDataAvailable": "No data available",
   "networkError": "Network error",
-  "tryAgain": "Try again"
+  "tryAgain": "Try again",
+  "administratorInfo": "Administrator Information",
+  "administratorName": "Administrator Name",
+  "useFieldsAboveToSearch": "Use the fields above to search for a unit"
 }

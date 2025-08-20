@@ -255,5 +255,8 @@
   "pleaseWait": "Por favor, aguarde...",
   "noDataAvailable": "Nenhum dado disponível",
   "networkError": "Erro de rede",
-  "tryAgain": "Tentar novamente"
+  "tryAgain": "Tentar novamente",
+  "administratorInfo": "Informações do Administrador",
+  "administratorName": "Nome do Administrador",
+  "useFieldsAboveToSearch": "Use os campos acima para buscar uma unidade"
 }

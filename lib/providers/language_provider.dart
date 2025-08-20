@@ -320,4 +320,9 @@ class LanguageProvider with ChangeNotifier {
   String get noDataAvailable => translate('noDataAvailable');
   String get networkError => translate('networkError');
   String get tryAgain => translate('tryAgain');
+  
+  // Additional properties for Buildings screen
+  String get administratorInfo => translate('administratorInfo');
+  String get administratorName => translate('administratorName');
+  String get useFieldsAboveToSearch => translate('useFieldsAboveToSearch');
 }
