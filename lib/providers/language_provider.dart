@@ -325,4 +325,30 @@ class LanguageProvider with ChangeNotifier {
   String get administratorInfo => translate('administratorInfo');
   String get administratorName => translate('administratorName');
   String get useFieldsAboveToSearch => translate('useFieldsAboveToSearch');
+  
+  // Additional properties for Equipment screen
+  String get equipmentList => translate('equipmentList');
+  String get maintenanceSchedule => translate('maintenanceSchedule');
+  String get condominium => translate('condominium');
+  String get totalEquipment => translate('totalEquipment');
+  String get underMaintenance => translate('underMaintenance');
+  String get addMaintenance => translate('addMaintenance');
+  
+  // Additional properties for Profile and Settings screens
+  String get profile => translate('profile');
+  String get personalInformation => translate('personalInformation');
+  String get editProfile => translate('editProfile');
+  String get saveChanges => translate('saveChanges');
+  String get changePassword => translate('changePassword');
+  String get notifications => translate('notifications');
+  String get darkMode => translate('darkMode');
+  String get about => translate('about');
+  String get account => translate('account');
+  String get privacy => translate('privacy');
+  String get appearance => translate('appearance');
+  String get dataSync => translate('dataSync');
+  String get support => translate('support');
+  String get helpCenter => translate('helpCenter');
+  String get contactUs => translate('contactUs');
+  String get version => translate('version');
 }

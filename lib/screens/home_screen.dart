@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/language_provider.dart';
 import 'equipment_screen.dart';
 import 'consumption_screen.dart';
 import 'financial_screen.dart';
 import 'calendar_screen.dart';
 import 'contacts_screen.dart';
+import 'profile_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -90,29 +93,64 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
+    return Consumer2<AuthProvider, LanguageProvider>(
+      builder: (context, authProvider, languageProvider, child) {
         final user = authProvider.user;
         if (user == null) return const SizedBox();
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('Dashboard - ${user.role.toUpperCase()}'),
+            title: Text('${languageProvider.dashboard} - ${user.role.toUpperCase()}'),
             actions: [
               PopupMenuButton<String>(
                 onSelected: (value) {
-                  if (value == 'logout') {
-                    authProvider.logout();
+                  switch (value) {
+                    case 'profile':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                      );
+                      break;
+                    case 'settings':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                      );
+                      break;
+                    case 'logout':
+                      authProvider.logout();
+                      break;
                   }
                 },
                 itemBuilder: (context) => [
-                  const PopupMenuItem(
+                  PopupMenuItem(
+                    value: 'profile',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.person, color: Color(0xFF6366F1)),
+                        const SizedBox(width: 8),
+                        Text(languageProvider.myProfile),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'settings',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.settings, color: Color(0xFF6B7280)),
+                        const SizedBox(width: 8),
+                        Text(languageProvider.settings),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem(
                     value: 'logout',
                     child: Row(
                       children: [
-                        Icon(Icons.logout),
-                        SizedBox(width: 8),
-                        Text('Logout'),
+                        const Icon(Icons.logout, color: Color(0xFFEF4444)),
+                        const SizedBox(width: 8),
+                        Text(languageProvider.logout, style: const TextStyle(color: Color(0xFFEF4444))),
                       ],
                     ),
                   ),
@@ -173,9 +211,9 @@ class DashboardScreen extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 // Quick Actions
-                const Text(
-                  'Quick Actions',
-                  style: TextStyle(
+                Text(
+                  languageProvider.quickActions,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
